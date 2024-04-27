@@ -35,7 +35,6 @@ public enum TokenType {
     /*
      * Literals
      */
-    IDENTIFIER,
     STRING,
     NUMBER,
 
@@ -58,6 +57,11 @@ public enum TokenType {
     RETURN,
     PRINT,
     NIL,
+
+    /*
+     * User-defined identifiers
+     */
+    IDENTIFIER,
 
     /*
      * End of file
