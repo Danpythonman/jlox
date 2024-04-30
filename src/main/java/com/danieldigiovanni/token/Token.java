@@ -1,10 +1,12 @@
 package com.danieldigiovanni.token;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Representation of a token in Lox.
  */
+@Getter
 @AllArgsConstructor
 public class Token {
 
