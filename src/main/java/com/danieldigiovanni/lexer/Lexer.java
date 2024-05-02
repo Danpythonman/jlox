@@ -320,7 +320,7 @@ public class Lexer {
         // Extract lexeme without the opening and closing quotation marks
         String value = this.source.substring(this.start + 1, this.current - 1);
         // Add token to list
-        this.tokens.add(new Token(TokenType.STRING, value, null, this.line));
+        this.tokens.add(new Token(TokenType.STRING, value, value, this.line));
     }
 
     /**
