@@ -315,6 +315,8 @@ public class Lexer {
             this.current++;
         }
 
+        // Consume last character of string
+        this.current++;
         // Consume closing '"'
         this.current++;
         // Extract lexeme without the opening and closing quotation marks
