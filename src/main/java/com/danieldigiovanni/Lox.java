@@ -1,6 +1,9 @@
 package com.danieldigiovanni;
 
+import com.danieldigiovanni.expr.Expr;
+import com.danieldigiovanni.expr.visitor.AstTreePrinterVisitor;
 import com.danieldigiovanni.lexer.Lexer;
+import com.danieldigiovanni.parser.Parser;
 import com.danieldigiovanni.token.Token;
 
 import java.io.BufferedReader;
@@ -10,7 +13,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * The Lox interpreter.
@@ -57,9 +59,17 @@ public class Lox {
     private static void run(String source) {
         Lexer lexer = new Lexer(source);
         List<Token> tokens = lexer.lexAllTokens();
+        Parser parser = new Parser(tokens);
+        Expr expression = parser.parse();
 
-        for (Token token : tokens) {
-            System.out.println(token);
+        if (expression != null) {
+//            System.out.println(new AstPrinterVisitor().print(expression));
+            System.out.println(new AstTreePrinterVisitor().print(expression));
+        } else {
+            System.out.println("ERROR");
+            for (Token token : tokens) {
+                System.out.println(token);
+            }
         }
     }
 
