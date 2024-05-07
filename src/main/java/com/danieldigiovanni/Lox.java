@@ -4,6 +4,7 @@ import com.danieldigiovanni.expr.Expr;
 import com.danieldigiovanni.expr.visitor.AstTreePrinterVisitor;
 import com.danieldigiovanni.lexer.Lexer;
 import com.danieldigiovanni.parser.Parser;
+import com.danieldigiovanni.parser.exception.LoxParseException;
 import com.danieldigiovanni.token.Token;
 
 import java.io.BufferedReader;
@@ -51,6 +52,10 @@ public class Lox {
         report(line, "", message);
     }
 
+    private static void error(LoxParseException parseException) {
+        report(parseException.getToken().getLineNumber(), "", parseException.getMessage());
+    }
+
     /**
      * Run the Lox interpreter on a string of Lox source code.
      *
@@ -60,16 +65,20 @@ public class Lox {
         Lexer lexer = new Lexer(source);
         List<Token> tokens = lexer.lexAllTokens();
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
 
-        if (expression != null) {
+        try {
+            Expr expression = parser.parse();
+            if (expression != null) {
 //            System.out.println(new AstPrinterVisitor().print(expression));
-            System.out.println(new AstTreePrinterVisitor().print(expression));
-        } else {
-            System.out.println("ERROR");
-            for (Token token : tokens) {
-                System.out.println(token);
+                System.out.println(new AstTreePrinterVisitor().print(expression));
+            } else {
+                System.out.println("ERROR");
+                for (Token token : tokens) {
+                    System.out.println(token);
+                }
             }
+        } catch (LoxParseException e) {
+            error(e);
         }
     }
 

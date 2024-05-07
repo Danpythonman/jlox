@@ -66,6 +66,11 @@ public enum TokenType {
     /*
      * End of file
      */
-    EOF
+    EOF,
+
+    /*
+     * Unknown token
+     */
+    UNKNOWN
 
 }

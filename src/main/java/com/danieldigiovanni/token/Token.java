@@ -26,6 +26,18 @@ public class Token {
         return new Token(TokenType.EOF, "", null, lastLineNumber);
     }
 
+    /**
+     * Generate an unknown token at the given line number.
+     *
+     * @param lineNumber The line number at which the unknown token was
+     *                   encountered.
+     *
+     * @return The unknown token.
+     */
+    public static Token unknown(int lineNumber) {
+        return new Token(TokenType.UNKNOWN, "", null, lineNumber);
+    }
+
     @Override
     public String toString() {
         return String.format(
