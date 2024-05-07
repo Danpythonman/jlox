@@ -260,11 +260,18 @@ public class Lexer {
              * comment.
              */
 
+            // Consume the first slash
+            this.current++;
+
             // Consume characters until the newline
             while (nextChar != '\n') {
                 this.current++;
                 nextChar = this.peek();
             }
+            // Increment line number because we found a newline
+            this.line++;
+            // Consume the final character of the comment
+            this.current++;
             // Consume the final newline
             this.current++;
         } else if (nextChar == '*') {
@@ -277,6 +284,12 @@ public class Lexer {
             // Consume characters until we see the closing "*/"
             while (!(nextChar == '*' && nextNextChar == '/')) {
                 this.current++;
+
+                // Increment the line number if we find a newline
+                if (nextChar == '\n') {
+                    this.line++;
+                }
+
                 nextChar = this.peek();
                 nextNextChar = this.peek(2);
             }
