@@ -2,6 +2,8 @@ package com.danieldigiovanni;
 
 import com.danieldigiovanni.expr.Expr;
 import com.danieldigiovanni.expr.visitor.AstTreePrinterVisitor;
+import com.danieldigiovanni.interpreter.Interpreter;
+import com.danieldigiovanni.interpreter.exception.LoxRuntimeException;
 import com.danieldigiovanni.lexer.Lexer;
 import com.danieldigiovanni.parser.Parser;
 import com.danieldigiovanni.parser.exception.LoxParseException;
@@ -29,14 +31,27 @@ public class Lox {
      * Reports an error by printing it to stderr.
      *
      * @param line The line number that the error occurred on.
-     * @param where Where?
      * @param message The error message.
      */
-    private static void report(int line, String where, String message) {
+    private static void reportCompilationError(int line, String message) {
         System.err.println(String.format(
-            "[line %d] Error %s: %s",
+            "[line %d] Compilation Error: %s",
             line,
-            where,
+            message
+        ));
+        error = true;
+    }
+
+    /**
+     * Reports an error by printing it to stderr.
+     *
+     * @param line The line number that the error occurred on.
+     * @param message The error message.
+     */
+    private static void reportRuntimeError(int line, String message) {
+        System.err.println(String.format(
+            "[line %d] Runtime Error: %s",
+            line,
             message
         ));
         error = true;
@@ -49,11 +64,21 @@ public class Lox {
      * @param message The error message.
      */
     private static void error(int line, String message) {
-        report(line, "", message);
+        reportCompilationError(line, message);
     }
 
     private static void error(LoxParseException parseException) {
-        report(parseException.getToken().getLineNumber(), "", parseException.getMessage());
+        reportCompilationError(
+            parseException.getToken().getLineNumber(),
+            parseException.getMessage()
+        );
+    }
+
+    private static void error(LoxRuntimeException interpreterException) {
+        reportRuntimeError(
+            interpreterException.getToken().getLineNumber(),
+            interpreterException.getMessage()
+        );
     }
 
     /**
@@ -69,8 +94,10 @@ public class Lox {
         try {
             Expr expression = parser.parse();
             if (expression != null) {
-//            System.out.println(new AstPrinterVisitor().print(expression));
+//                System.out.println(new AstPrinterVisitor().print(expression));
                 System.out.println(new AstTreePrinterVisitor().print(expression));
+                Interpreter interpreter = new Interpreter();
+                interpreter.interpret(expression);
             } else {
                 System.out.println("ERROR");
                 for (Token token : tokens) {
@@ -78,6 +105,8 @@ public class Lox {
                 }
             }
         } catch (LoxParseException e) {
+            error(e);
+        } catch (LoxRuntimeException e) {
             error(e);
         }
     }
